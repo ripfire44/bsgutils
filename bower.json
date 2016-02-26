@@ -1,0 +1,22 @@
+{
+  "name": "bstutils",
+  "description": "Angular bsg utils",
+  "version": "1.0.0",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "source",
+    "gulpfile.js",
+    "app.js",
+    "package.json"
+  ],
+  "dependencies": {
+    "angular": "~1.4.9",
+    "bootstrap": "^3.3.6",
+    "angular-bootstrap": "^1.1.2"
+  }
+}
