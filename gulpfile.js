@@ -41,9 +41,7 @@ gulp.task('dist', ['distClean', 'compile'], function() {
 
 // Clean
 gulp.task('clean', function(cb) {
-	return gulp.src(['./public/**', '!./public'], {
-			read: false
-		})
+	return gulp.src(['./public/index.html','./public/lib', './public/js'])
 		.pipe(rimraf());
 });
 
