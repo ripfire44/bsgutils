@@ -2,7 +2,11 @@
 
 **v.1.1.0**
 
-Angular Assessor Utility service and directives
+Angular Assessor Utility service, directives and filters
+
+- [`bsgUtils`](#bsgutils) service provides utility methods
+- [`bsgNopropagate`](#bsgnopropagate) directive prevents click propagation on `a` tags
+- [`bsgYesno`](#bsgyesno) filter returns "Yes" or "No"
 
 ## Quick Start
 
@@ -25,15 +29,7 @@ Add `bsg` as a dependency for your app.
 var myApp = angular.module('myApp', ['bsg']);
 ```
 
-## bsgNopropagate
-
-This directive, which only applies to anchor tags, prevents propagation of click event down to the parent. Use the directive as an attribute on an anchor tag:
-
-```html
-<a href="#" bsg-nopropagate>Link</a>
-```
-
-## bsgUtils
+## <a name="bsgutils" />bsgUtils
 
 This is a service that provides several utility methods.
 
@@ -70,4 +66,22 @@ This service utility will append a script with the URL, `url`,  to the `head` an
 	var loadScript = bsgUtils.addScript(myscripturl).then(function(){
 		window.alert('Script has been loaded');
 	});
+```
+
+## <a name="bsgnopropagate" />bsgNopropagate
+
+This directive, which only applies to anchor tags, prevents propagation of click event down to the parent. Use the directive as an attribute on an anchor tag:
+
+```html
+<a href="#" bsg-nopropagate>Link</a>
+```
+
+## <a name="bsgyesno" />bsgYesno
+
+This filter turns a boolean representation into a "Yes" or "No". The input can be `1` or `0`, `true` or `false`, `y` or `no`. A blank or `null` input will return null. Any other values will default to "No".
+
+```html
+<span>{{ 1 | bsgYesno }}</span>
+<span>{{ false | bsgYesno }}</span>
+<span>{{ 'n' | bsgYesno }}</span>
 ```
