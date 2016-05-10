@@ -12,6 +12,7 @@ var templateCache = require('gulp-angular-templatecache');
 var less = require('gulp-less');
 var autoprefixer = require('gulp-autoprefixer');
 var minifyCss = require('gulp-minify-css');
+var karmaServer = require('karma').Server;
 
 var browserSync = require('browser-sync');
 var nodemon = require('gulp-nodemon');
@@ -162,3 +163,30 @@ gulp.task('nodemon', function(cb) {
 		}
 	});
 });
+gulp.task('testPages', function(){
+	return gulp.src(['./source/index.ejs'])
+		.pipe(ejs(null, {
+			ext: '.html'
+		}))
+		.pipe(templateCache('pages.min.js', {
+			module: 'bsg',
+		}))
+		.pipe(uglify())
+		.pipe(gulp.dest('./public/js'));
+});
+
+
+gulp.task('testKarma', ['compile', 'testPages'], function(cb){
+	new karmaServer({
+		configFile: __dirname + '/karma.conf.js',
+		browsers: ['PhantomJS'],
+		singleRun: true,
+	}, function() {
+		cb();
+	}).start();
+});
+
+// Unit test
+gulp.task('test', function(cb){
+	runSequence('clean', 'testKarma', cb);
+})
