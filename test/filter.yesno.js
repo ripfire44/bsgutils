@@ -25,8 +25,13 @@ describe('Filter: bsgYesno', function() {
 		expect(val).toBe('Yes');
 	});
 
-	it('should return Yes if input is true', function() {
+	it('should return Yes if input is boolean true', function() {
 		var val = bsgYesnoFilter(true);
+		expect(val).toBe('Yes');
+	});
+
+	it('should return Yes if input is string true', function() {
+		var val = bsgYesnoFilter('true');
 		expect(val).toBe('Yes');
 	});
 

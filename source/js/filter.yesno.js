@@ -1,9 +1,13 @@
 (function(app) {
 	var yesno = function() {
 		return function(input) {
-			input = typeof input === 'string' && input.length == 0 ? null : input;
-
-			return input == null ? input : ((input === 1) || (input && typeof input === 'boolean') || (typeof input === 'string' && input.toString().toLowerCase() === 'y') ? 'Yes' : 'No');
+			if (typeof input === 'string') {
+				if (input.length == 0) {
+					return null;
+				}
+				return /^((yes)|(true)|y)$/i.test(input.trim()) ? 'Yes' : 'No';
+			}
+			return input == null ? null : input ? 'Yes' : 'No';
 		}
 	};
 	app.filter('bsgYesno', [yesno]);
