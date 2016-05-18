@@ -45,7 +45,7 @@ This service utility will serialize the object, `obj`,  and return an encoded qu
 
 #### <code>addScript(*url*)</code>
 
-This service utility will append a script with the URL, `url`,  to the `head` and return a promise that will resolve once loaded.
+This service utility will append a script with the URL, `url`, or an array of scripts URLs to the `head` and return a promise that will resolve once loaded.
 
 ### Example
 
@@ -66,6 +66,12 @@ This service utility will append a script with the URL, `url`,  to the `head` an
 	var loadScript = bsgUtils.addScript(myscripturl).then(function(){
 		window.alert('Script has been loaded');
 	});
+
+	var myscripts = ['js/myscript1.js', 'js/myscript2.js'];
+
+	var loadScripts = bsgUtils.addScript(myscripts).then(function(){
+		window.alert('All scripts has been loaded');
+	})
 ```
 
 ## <a name="bsgnopropagate" />bsgNopropagate
