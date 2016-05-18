@@ -20,7 +20,7 @@
 			if ($window.jQuery) {
 				alert('jQuery already loaded');
 			} else {
-				bsgUtils.addScript('https://code.jquery.com/jquery-2.2.1.min.js').then(function() {
+				bsgUtils.addScript(['https://code.jquery.com/jquery-2.2.1.min.js','https://code.jquery.com/ui/1.11.4/jquery-ui.min.js']).then(function() {
 					$window.alert('jquery loaded using version ' + $window.jQuery.fn.jquery);
 				});
 			}
