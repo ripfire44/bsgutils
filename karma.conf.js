@@ -18,10 +18,19 @@ module.exports = function(config) {
             'public/lib/angular/angular.min.js',
             'public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
             'node_modules/angular-mocks/angular-mocks.js',
+            'node_modules/jquery/dist/jquery.min.js',
+            'node_modules/jasmine-jquery/lib/jasmine-jquery.js',
             'public/js/app.js',
             'public/js/angular-bsg-utils.js',
             'public/js/pages.min.js',
-            'test/**/*.js'
+            'test/**/*.js',
+            // JSON fixture
+            {
+                pattern: 'test/*.json',
+                watched: true,
+                served: true,
+                included: false
+            }
         ],
 
 
@@ -37,7 +46,7 @@ module.exports = function(config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['spec'],
+        reporters: ['progress'],
 
 
         // web server port
@@ -54,7 +63,7 @@ module.exports = function(config) {
 
 
         // enable / disable watching file and executing tests whenever any file changes
-        autoWatch: false,
+        autoWatch: true,
 
         plugins: [
             'karma-jasmine',

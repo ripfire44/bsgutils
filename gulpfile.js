@@ -180,7 +180,9 @@ gulp.task('testKarma', ['compile', 'testPages'], function(cb){
 	new karmaServer({
 		configFile: __dirname + '/karma.conf.js',
 		browsers: ['PhantomJS'],
+		reporters: ['spec'],
 		singleRun: true,
+		autoWatch: false,
 	}, function() {
 		cb();
 	}).start();
