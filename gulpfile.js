@@ -42,7 +42,7 @@ gulp.task('dist', ['distClean', 'compile'], function() {
 
 // Clean
 gulp.task('clean', function(cb) {
-	return gulp.src(['./public/index.html','./public/lib', './public/js'])
+	return gulp.src(['./public/index.html', './public/lib', './public/js'])
 		.pipe(rimraf());
 });
 
@@ -100,6 +100,11 @@ gulp.task('compilePublicJavascripts', function() {
 		.pipe(gulp.dest('./public/js'));
 });
 
+gulp.task('copyContent', function() {
+	return gulp.src('./source/content/**/*')
+		.pipe(gulp.dest('./public/content'));
+});
+
 // Compile directive templates
 gulp.task('compileTemplates', function() {
 	return gulp.src(['./source/js/template/**/*.html'])
@@ -128,7 +133,7 @@ gulp.task('compileStyles', function() {
 		})
 		.pipe(gulp.dest('./public/css'));
 });
-gulp.task('compile', ['bowerComponents', 'compileIndex', 'compileJavascripts', 'compilePublicJavascripts', 'compileTemplates', 'compileStyles']);
+gulp.task('compile', ['bowerComponents', 'compileIndex', 'compileJavascripts', 'compilePublicJavascripts', 'compileTemplates', 'compileStyles', 'copyContent']);
 
 gulp.task('compileWatch', ['compile'], function() {
 	gulp.watch(['./source/js/**/*.js'], ['compileJavascripts']);
@@ -163,7 +168,7 @@ gulp.task('nodemon', function(cb) {
 		}
 	});
 });
-gulp.task('testPages', function(){
+gulp.task('testPages', function() {
 	return gulp.src(['./source/index.ejs'])
 		.pipe(ejs(null, {
 			ext: '.html'
@@ -176,7 +181,7 @@ gulp.task('testPages', function(){
 });
 
 
-gulp.task('testKarma', ['compile', 'testPages'], function(cb){
+gulp.task('testKarma', ['compile', 'testPages'], function(cb) {
 	new karmaServer({
 		configFile: __dirname + '/karma.conf.js',
 		browsers: ['PhantomJS'],
@@ -189,6 +194,6 @@ gulp.task('testKarma', ['compile', 'testPages'], function(cb){
 });
 
 // Unit test
-gulp.task('test', function(cb){
+gulp.task('test', function(cb) {
 	runSequence('clean', 'testKarma', cb);
 })
