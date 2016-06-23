@@ -8,12 +8,20 @@
 	<script src="lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 	<script src="js/angular-bsg-utils.js"></script>
 	<script src="js/app.js"></script>
+	<style type="text/css">
+		.tab-content {
+			padding: 20px 0;
+		}
+		section {
+			margin: 20px 0;
+		}
+	</style>
 </head>
 <body>
 	<div class="jumbotron">
-	<h1>Angular bsg utils Sample</h1>
+		<h1>Angular bsg utils Sample</h1>
 	</div>
-	<div ng-controller="MainController" class="body-content">
+	<div ng-controller="MainController" class="body-content container">
 		<section>
 			<h3>No propagate link directive: <code>bsg-nopropagate</code></h3>
 			<p>This directive, which only applies to anchor tags, prevents propagation of click event down to the parent. The following links are wrapped by a <code>div</code> element with a click event. The right one has a directive while the other doesn't.</p>
@@ -40,7 +48,131 @@
 			<p>This service utility will append a script to the <code>head</code> and return a promise that will resolve once loaded</p>
 			<button type="button" ng-click="loadJquery()">Load jQuery</button>
 		</section>
-		
+		<section>
+			<h3>Pager utility</h3>
+			<p>This class will allow the user to create pager object that will make pages out of a dataset. This will only create a helper object. The user will still have to create the layout.</p>
+			<p><em>Example:</em></p>
+
+			<uib-tabset>
+				<uib-tab heading="Output">
+					<div>
+						<div class="form-inline pull-left">
+							<div class="form-group">
+								<label class="sr-only" for="tableFilter">Filter Last Name</label>
+								<input type="text" class="form-control" id="tableFilter" placeholder="Filter Last Name" ng-model="datafilter.last_name" />
+							</div>
+						</div>
+						<div class="pull-right"><strong>{{dataset.getInfo()}}</strong></div>
+					</div>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>First Name</th>
+								<th>Last Name</th>
+								<th>Email</th>
+								<th>Gender</th>
+								<th>IP Address</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="row in dataset.currentPage">
+								<td>{{row.first_name}}</td>
+								<td>{{row.last_name}}</td>
+								<td>{{row.email}}</td>
+								<td>{{row.gender}}</td>
+								<td>{{row.ip_address}}</td>
+							</tr>
+						</tbody>
+					</table>
+					<ul class="pagination">
+						<li ng-class="{disabled:dataset.currentPageIndex==0}">
+							<a aria-label="Previous" ng-click="dataset.shiftPage(-1)">
+								<span aria-hidden="true">&laquo;</span>
+							</a>
+						</li>
+						<li ng-hide="dataset.offset==0">
+							<a ng-click="dataset.shiftOffset(-1)">&#8230;</a>
+						</li>
+						<li ng-repeat="pageIndex in dataset.currentRange" ng-class="{active:dataset.currentPageIndex==pageIndex}">
+							<a ng-click="dataset.currentPageIndex = pageIndex">{{pageIndex+1}}</a>
+						</li>
+						<li ng-hide="dataset.isAtMaxOffset()">
+							<a ng-click="dataset.shiftOffset()">&#8230;</a>
+						</li>
+						<li ng-class="{disabled:dataset.currentPage==dataset.lastPageIndex}">
+							<a aria-label="Next" ng-click="dataset.shiftPage()">
+								<span aria-hidden="true">&raquo;</span>
+							</a>
+						</li>
+					</ul>
+				</uib-tab>
+				<uib-tab heading="Markup">
+				<pre class="prettyprint"><code class="language-html hljs " ng-non-bindable><span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"form-inline pull-left"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"form-group"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">label</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"sr-only"</span> <span class="hljs-attribute">for</span>=<span class="hljs-value">"tableFilter"</span>&gt;</span>Filter Last Name<span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"text"</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"form-control"</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"tableFilter"</span> <span class="hljs-attribute">placeholder</span>=<span class="hljs-value">"Filter Last Name"</span> <span class="hljs-attribute">ng-model</span>=<span class="hljs-value">"datafilter.last_name"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"pull-right"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">strong</span>&gt;</span>{{dataset.getInfo()}}<span class="hljs-tag">&lt;/<span class="hljs-title">strong</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-title">table</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"table"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">thead</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">tr</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">th</span>&gt;</span>First Name<span class="hljs-tag">&lt;/<span class="hljs-title">th</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">th</span>&gt;</span>Last Name<span class="hljs-tag">&lt;/<span class="hljs-title">th</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">th</span>&gt;</span>Email<span class="hljs-tag">&lt;/<span class="hljs-title">th</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">th</span>&gt;</span>Gender<span class="hljs-tag">&lt;/<span class="hljs-title">th</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">th</span>&gt;</span>IP Address<span class="hljs-tag">&lt;/<span class="hljs-title">th</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-title">tr</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">thead</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">tbody</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">tr</span> <span class="hljs-attribute">ng-repeat</span>=<span class="hljs-value">"row in dataset.currentPage"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">td</span>&gt;</span>{{row.first_name}}<span class="hljs-tag">&lt;/<span class="hljs-title">td</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">td</span>&gt;</span>{{row.last_name}}<span class="hljs-tag">&lt;/<span class="hljs-title">td</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">td</span>&gt;</span>{{row.email}}<span class="hljs-tag">&lt;/<span class="hljs-title">td</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">td</span>&gt;</span>{{row.gender}}<span class="hljs-tag">&lt;/<span class="hljs-title">td</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">td</span>&gt;</span>{{row.ip_address}}<span class="hljs-tag">&lt;/<span class="hljs-title">td</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-title">tr</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">tbody</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">table</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-title">ul</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"pagination"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">li</span> <span class="hljs-attribute">ng-class</span>=<span class="hljs-value">"{disabled:dataset.currentPageIndex==0}"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">a</span> <span class="hljs-attribute">aria-label</span>=<span class="hljs-value">"Previous"</span> <span class="hljs-attribute">ng-click</span>=<span class="hljs-value">"dataset.shiftPage(-1)"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">span</span> <span class="hljs-attribute">aria-hidden</span>=<span class="hljs-value">"true"</span>&gt;</span>&amp;laquo;<span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-title">a</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">li</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">li</span> <span class="hljs-attribute">ng-hide</span>=<span class="hljs-value">"dataset.offset==0"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">a</span> <span class="hljs-attribute">ng-click</span>=<span class="hljs-value">"dataset.shiftOffset(-1)"</span>&gt;</span>&amp;#8230;<span class="hljs-tag">&lt;/<span class="hljs-title">a</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">li</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">li</span> <span class="hljs-attribute">ng-repeat</span>=<span class="hljs-value">"pageIndex in dataset.currentRange"</span> <span class="hljs-attribute">ng-class</span>=<span class="hljs-value">"{active:dataset.currentPageIndex==pageIndex}"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">a</span> <span class="hljs-attribute">ng-click</span>=<span class="hljs-value">"dataset.currentPageIndex = pageIndex"</span>&gt;</span>{{pageIndex+1}}<span class="hljs-tag">&lt;/<span class="hljs-title">a</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">li</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">li</span> <span class="hljs-attribute">ng-hide</span>=<span class="hljs-value">"dataset.isAtMaxOffset()"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">a</span> <span class="hljs-attribute">ng-click</span>=<span class="hljs-value">"dataset.shiftOffset()"</span>&gt;</span>&amp;#8230;<span class="hljs-tag">&lt;/<span class="hljs-title">a</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">li</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">li</span> <span class="hljs-attribute">ng-class</span>=<span class="hljs-value">"{disabled:dataset.currentPage==dataset.lastPageIndex}"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">a</span> <span class="hljs-attribute">aria-label</span>=<span class="hljs-value">"Next"</span> <span class="hljs-attribute">ng-click</span>=<span class="hljs-value">"dataset.shiftPage()"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-title">span</span> <span class="hljs-attribute">aria-hidden</span>=<span class="hljs-value">"true"</span>&gt;</span>&amp;raquo;<span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-title">a</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">li</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">ul</span>&gt;</span></code></pre>
+				</uib-tab>
+				<uib-tab heading="JavaScript">
+				<pre class="prettyprint"><code class="language-javascript hljs ">$scope.datafilter = {};
+$scope.$watch(<span class="hljs-string">'datafilter.last_name'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(newVal, oldVal)</span>{</span>
+    <span class="hljs-keyword">if</span>(newVal===oldVal) {
+        <span class="hljs-keyword">return</span>;
+    }
+    $scope.dataset.setFilter($scope.datafilter);
+});
+$http.get(<span class="hljs-string">'content/data.json'</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(xhr)</span>{</span>
+    $scope.dataset = <span class="hljs-keyword">new</span> bsgPager(xhr.data);
+});</code></pre>
+				</uib-tab>
+			</uib-tabset>
+		</section>
+
 	</div>
 </body>
 </html>

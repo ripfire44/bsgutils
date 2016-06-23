@@ -1,5 +1,5 @@
 (function(app) {
-	var main = function($scope, $window, bsgUtils) {
+	var main = function($scope, $window, $http, bsgUtils, bsgPager) {
 		$scope.parm = {
 			property1: 'hello',
 			property2: 'world',
@@ -24,8 +24,17 @@
 					$window.alert('jquery loaded using version ' + $window.jQuery.fn.jquery);
 				});
 			}
-
-		}
+		};
+		$scope.datafilter = {};
+		$scope.$watch('datafilter.last_name', function(newVal, oldVal){
+			if(newVal===oldVal) {
+				return;
+			}
+			$scope.dataset.setFilter($scope.datafilter);
+		});
+		$http.get('content/data.json').then(function(xhr){
+			$scope.dataset = new bsgPager(xhr.data);
+		});
 	};
-	app.controller('MainController', ['$scope', '$window', 'bsgUtils', main]);
+	app.controller('MainController', ['$scope', '$window', '$http', 'bsgUtils', 'bsgPager', main]);
 }(myapp));
