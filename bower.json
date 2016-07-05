@@ -15,7 +15,8 @@
     "package.json"
   ],
   "dependencies": {
-    "angular": "^1.5.5"
+    "angular": "^1.5.5",
+    "angular-filter": "^0.5.8"
   },
   "devDependencies": {
     "bootstrap": "^3.3.6",

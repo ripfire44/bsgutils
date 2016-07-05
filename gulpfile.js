@@ -50,6 +50,7 @@ gulp.task('clean', function(cb) {
 gulp.task('bowerComponents', function() {
 	return gulp.src([bcd + '/angular/angular.min.js',
 			bcd + '/angular-bootstrap/ui-bootstrap-tpls.min.js',
+			bcd + '/angular-filter/dist/angular-filter.min.js',
 			bcd + '/bootstrap/dist/css/bootstrap.min.css',
 			bcd + '/bootstrap/dist/fonts/**/*'
 		], {
