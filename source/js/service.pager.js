@@ -1,18 +1,36 @@
 (function(app) {
-	var pager = function($filter) {
+	var pager = function($filter, bsgUtils) {
 		var P = function(data, options) {
 			// Setup properties
-			var _data = [];
+			var _this = this,
+				_data = [],
+				_view = [],
+				_pages = [],
+				_pageRange = [],
+				_currentPageIndex = 0,
+				_currentPageOffset = 0,
+				_isFiltered = false,
+				_expression,
+				_comparator,
+				_filteredCount,
+				_isGrouped = false,
+				_groupByField,
+				_opts = {
+					pageLength: 10,
+					rangeLength: 7
+				};
+
 			Object.defineProperty(this, 'data', {
 				get: function() {
 					return _data;
 				},
 				set: function(val) {
 					_data = val || [];
-					this.pages = toPages(_data, opts.pageLength);
+					_view = _data;
+					this.pages = toPages(_data, _opts.pageLength);
 				}
 			});
-			var _pages = [];
+
 			Object.defineProperty(this, 'pages', {
 				get: function() {
 					return _pages;
@@ -20,121 +38,156 @@
 				set: function(val) {
 					_pages = val || [];
 					this.currentPageIndex = 0;
-					this.range = range(val.length);
+					_pageRange = range(val.length);
 				}
 			});
+
 			Object.defineProperty(this, 'currentRange', {
 				get: function() {
-					return this.range.slice(_offset, _offset + this.rangeLength);
+					return _pageRange.slice(_currentPageOffset, _currentPageOffset + _opts.rangeLength);
 				}
 			});
-			var _currentPageIndex = 0;
+
 			Object.defineProperty(this, 'currentPageIndex', {
 				get: function() {
 					return _currentPageIndex;
 				},
 				set: function(val) {
 					_currentPageIndex = clamp(val, 0, this.pages.length - 1);
-					_offset = Math.floor(_currentPageIndex / this.rangeLength) * this.rangeLength;
+					_currentPageOffset = Math.floor(_currentPageIndex / _opts.rangeLength) * _opts.rangeLength;
 				}
 			});
+
 			Object.defineProperty(this, 'lastPageIndex', {
 				get: function() {
 					return this.pages.length - 1;
 				}
 			});
+
 			Object.defineProperty(this, 'currentPage', {
 				get: function() {
 					return this.pages[this.currentPageIndex];
 				}
 			});
-			Object.defineProperty(this, 'rangeLength', {
-				get: function() {
-					return opts.rangeLength;
-				}
-			});
+
 			Object.defineProperty(this, 'pageLength', {
 				get: function() {
-					return opts.pageLength;
+					return _opts.pageLength;
 				}
 			});
-			var _offset = 0;
-			Object.defineProperty(this, 'offset', {
+
+			Object.defineProperty(this, 'currentPageOffset', {
 				get: function() {
-					return _offset;
+					return _currentPageOffset;
 				}
 			});
+
 			Object.defineProperty(this, 'hasMultiplePage', {
 				get: function() {
 					return this.pages.length > 1;
 				}
 			});
+
 			Object.defineProperty(this, 'currentRecordCount', {
 				get: function() {
-					return (isFiltered) ? filteredCount : this.data.length;
+					return _isFiltered ? _filteredCount : _data.length;
+				}
+			});
+
+			Object.defineProperty(this, 'isAtMaxOffset', {
+				get: function() {
+					return _currentPageOffset == this.currentMaxOffset;
+				}
+			});
+
+			Object.defineProperty(this, 'currentMaxOffset', {
+				get: function() {
+					return Math.floor(this.lastPageIndex / _opts.rangeLength) * _opts.rangeLength;
 				}
 			});
 
 			// Setup methods
 			this.getInfo = function() {
-				if (!this.currentRecordCount) {
+				if (!this.data.length) {
 					return '';
 				}
-				var indexStart = (this.currentPageIndex * this.pageLength) + 1;
-				var indexEnd = clamp(this.pageLength + indexStart - 1, 0, this.currentRecordCount);
-				var msg = 'Showing ' + indexStart + ' to ' + indexEnd + ' of ' + this.currentRecordCount + ' entries.';
+				var rowStart = (this.currentPageIndex * _opts.pageLength) + 1;
+				var rowEnd = clamp(_opts.pageLength + rowStart - 1, 0, this.currentRecordCount);
+				var msg = 'Showing ' + rowStart + ' to ' + rowEnd + ' of ' + this.currentRecordCount + ' entries.';
 				var filter = '(filtered from ' + this.data.length + ' total entries)';
+				return msg + (_isFiltered ? filter : '');
+			};
 
-				return msg + (isFiltered ? filter : '');
+			this.shiftOffset = function() {
+				_currentPageOffset += _opts.rangeLength;
+				_currentPageOffset = clamp(_currentPageOffset, 0, this.currentMaxOffset);
+				this.currentPageIndex = clamp(this.currentPageIndex, _currentPageOffset, Math.min(_currentPageOffset + _opts.rangeLength, this.pages.length) - 1);
+				return this.currentPageOffset;
 			};
-			this.shiftOffset = function(n) {
-				if (!arguments.length) {
-					_offset += this.rangeLength;
-				} else {
-					_offset -= this.rangeLength;
-				}
-				_offset = clamp(_offset, 0, this.getMaxOffset());
-				this.currentPageIndex = clamp(this.currentPageIndex, _offset, Math.min(_offset + this.rangeLength, this.pages.length) - 1);
-				return _offset;
-			};
-			this.getMaxOffset = function() {
-				return Math.floor(this.lastPageIndex / this.rangeLength) * this.rangeLength;
-			};
-			this.isAtMaxOffset = function() {
-				return _offset == this.getMaxOffset();
-			};
+
+			this.unshiftOffset = function() {
+				_currentPageOffset -= _opts.rangeLength;
+				_currentPageOffset = clamp(_currentPageOffset, 0, this.currentMaxOffset);
+				this.currentPageIndex = clamp(this.currentPageIndex, _currentPageOffset, Math.min(_currentPageOffset + _opts.rangeLength, this.pages.length) - 1);
+				return this.currentPageOffset;
+			}
+
 			this.shiftPage = function(n) {
-				if (!arguments.length) {
-					this.currentPageIndex++;
-					return;
-				}
+				this.currentPageIndex++;
+			};
+
+			this.unshiftPage = function() {
 				this.currentPageIndex--;
 			};
+
 			this.setFilter = function(expression, comparator) {
-				if (arguments.length == 0 || !expression) {
-					this.pages = toPages(this.data, this.pageLength);
-					isFiltered = false;
-					filteredCount = this.data.length;
-					return;
-				}
-				var arr = $filter('filter')(this.data, expression, comparator);
-				isFiltered = true;
-				filteredCount = arr.length;
-				this.pages = toPages(arr, this.pageLength);
+				_expression = expression;
+				_comparator = comparator;
+				_isFiltered = true;
+				refreshView();
 			};
+
+			this.clearFilter = function() {
+				_isFiltered = false;
+				refreshView();
+			};
+
+			this.setGroupBy = function(field) {
+				_isGrouped = true;
+				_groupByField = field;
+				refreshView()
+			}
+			
+			this.clearGroupBy = function() {
+				_isGrouped = false;
+				refreshView()
+			}
 
 			// Do constructor stuff
-			var opts = {
-				pageLength: 10,
-				rangeLength: 7
-			};
-			var isFiltered, filteredCount;
-			angular.extend(opts, options);
+			angular.extend(_opts, options);
 			this.data = data;
-			isFiltered = false;
-			filteredCount = this.data.length;
 
 			// private methods
+			function refreshView() {
+				if (_isFiltered) {
+					_view = $filter('filter')(_data, _expression, _comparator);
+					_filteredCount = _view.length;
+				} else {
+					_view = _data;
+					_filteredCount = _data.length;
+				}
+				if (_isGrouped) {
+					var obj = $filter('groupBy')(_view, _groupByField);
+					_view = Object.keys(obj).map(function(key) {
+						return {
+							'key': key,
+							'row': obj[key]
+						};
+					});
+				}
+				_this.pages = toPages(_view, _opts.pageLength);
+			}
+
 			function toPages(data, pageLength) {
 				var d = data.slice();
 				var p = [];
@@ -155,10 +208,21 @@
 				}
 				return r;
 			}
+
+			function dataobjToArray(data) {
+				var arr = [];
+				angular.forEach(data, function(val, key) {
+					this.push({
+						'key': key,
+						'value': val
+					});
+				}, arr);
+				return arr;
+			}
 		}
 		return P;
 	};
-	app.factory('bsgPager', ['$filter', pager])
+	app.factory('bsgPager', ['$filter', 'bsgUtils', pager])
 }(function() {
 	var m;
 	try {

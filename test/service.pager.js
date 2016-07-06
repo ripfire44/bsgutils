@@ -2,6 +2,7 @@ describe('Service: Pager', function() {
 
 	beforeEach(function() {
 		module('bsg');
+		module('angular.filter');
 	});
 
 	var bsgPager;
@@ -43,7 +44,7 @@ describe('Service: Pager', function() {
 		expect(pager.pages[pager.lastPageIndex][lastRowIndex]['first_name']).toBe('Cheryl');
 	});
 
-	it('should have initial current range of 0-6 (default pagerRangeLength is 7)', function() {
+	it('should have initial current range of 0-6 (default pager rangeLength is 7)', function() {
 		expect(pager.currentRange.length).toBe(7);
 		expect(pager.currentRange[0]).toBe(0);
 		expect(pager.currentRange[1]).toBe(1);
@@ -67,16 +68,12 @@ describe('Service: Pager', function() {
 		expect(pager.currentPage[lastRowIndex]['first_name']).toBe('Craig');
 	});
 
-	it('should have default rangeLength of 7', function() {
-		expect(pager.rangeLength).toBe(7);
-	});
-
 	it('should have initial pageLength of 10 (default) on the first page', function() {
 		expect(pager.pageLength).toBeDefined(10);
 	});
 
-	it('should have initial offset of 0', function() {
-		expect(pager.offset).toBe(0);
+	it('should have initial currentPageOffset of 0', function() {
+		expect(pager.currentPageOffset).toBe(0);
 	});
 
 	it('should indicate hasMultiplePage is true', function() {
@@ -87,18 +84,18 @@ describe('Service: Pager', function() {
 		expect(pager.currentRecordCount).toBe(100);
 	});
 
-	it('should have range of 7-9, offset of 7, and currentPageIndex of 7 when shiftOffset forward', function() {
+	it('should have range of 7-9, currentPageOffset of 7, and currentPageIndex of 7 when shiftOffset forward', function() {
 		pager.shiftOffset();
 		expect(pager.currentRange[0]).toBe(7);
 		expect(pager.currentRange[1]).toBe(8);
 		expect(pager.currentRange[2]).toBe(9);
-		expect(pager.offset).toBe(7);
+		expect(pager.currentPageOffset).toBe(7);
 		expect(pager.currentPageIndex).toBe(7);
 	});
 
-	it('should have range of 0-6, offset of 0, and currentPageIndex of 6 when shiftOffset forward, then backward', function() {
+	it('should have range of 0-6, currentPageOffset of 0, and currentPageIndex of 6 when shiftOffset forward, then backward', function() {
 		pager.shiftOffset();
-		pager.shiftOffset(-1);
+		pager.unshiftOffset();
 		expect(pager.currentRange[0]).toBe(0);
 		expect(pager.currentRange[1]).toBe(1);
 		expect(pager.currentRange[2]).toBe(2);
@@ -106,38 +103,70 @@ describe('Service: Pager', function() {
 		expect(pager.currentRange[4]).toBe(4);
 		expect(pager.currentRange[5]).toBe(5);
 		expect(pager.currentRange[6]).toBe(6);
-		expect(pager.offset).toBe(0);
+		expect(pager.currentPageOffset).toBe(0);
 		expect(pager.currentPageIndex).toBe(6);
 	});
 
-	it('should return 7 when getMaxOffset', function(){
-		expect(pager.getMaxOffset()).toBe(7);
+	it('should return currentMaxOffset of 7', function() {
+		expect(pager.currentMaxOffset).toBe(7);
 	});
 
 	it('should indicate isAtMaxOffset to be true when shiftOffset forward once (reach limit)', function() {
 		pager.shiftOffset();
-		expect(pager.isAtMaxOffset()).toBeTruthy();
-	});
-
-	it('should indicate currentPageIndex of 7, offset of 7, and maxOffset to be true when shiftPage forwards from page 6', function() {
-		pager.shiftOffset();
-		pager.shiftOffset(-1);
-		pager.shiftPage();
-		expect(pager.currentPageIndex).toBe(7);
-		expect(pager.offset).toBe(7);
 		expect(pager.isAtMaxOffset).toBeTruthy();
 	});
 
-	it('should stay at page index 0 when shiftPage backwards from page index 0', function(){
-		pager.shiftPage(-1);
+	it('should indicate currentPageIndex of 7, currentPageOffset of 7, and maxOffset to be true when shiftPage forwards from page 6', function() {
+		pager.shiftOffset();
+		pager.unshiftOffset();
+		pager.shiftPage();
+		expect(pager.currentPageIndex).toBe(7);
+		expect(pager.currentPageOffset).toBe(7);
+		expect(pager.isAtMaxOffset).toBeTruthy();
+	});
+
+	it('should stay at page index 0 when unshiftPage from page index 0', function() {
+		pager.unshiftPage();
 		expect(pager.currentPageIndex).toBe(0);
 	});
 
-	it('should have a 55 count and 6 pages if setFilter is set to female only ', function(){
-		var filter = {
+	it('should have a 55 count and 6 pages if setFilter is set to female only ', function() {
+		pager.setFilter({
 			gender: 'Female'
-		};
-		pager.setFilter(filter);
+		});
+		expect(pager.currentRecordCount).toBe(55);
+		expect(pager.pages.length).toBe(6);
+	});
+
+	it('should have 100 count if clearFilter is called after being filtered', function() {
+		pager.setFilter({
+			gender: 'Female'
+		});
+		pager.clearFilter();
+		expect(pager.currentRecordCount).toBe(100);
+		expect(pager.pages.length).toBe(10);
+	});
+
+	it('should group by property', function() {
+		pager.setGroupBy('gender');
+		expect(pager.pages.length).toBe(1);
+	});
+
+	it('should filter and group at the same time', function() {
+		pager.setFilter({
+			gender: 'Female'
+		});
+		pager.setGroupBy('last_name');
+		expect(pager.currentRecordCount).toBe(55);
+		expect(pager.pages.length).toBe(5);
+	});
+
+	it('should produce correct values when grouping is turned off after filtering and paging', function() {
+		pager.setFilter({
+			gender: 'Female'
+		});
+		pager.setGroupBy('last_name');
+		pager.clearGroupBy();
 		expect(pager.currentRecordCount).toBe(55);
 		expect(pager.pages.length).toBe(6);
 	});
