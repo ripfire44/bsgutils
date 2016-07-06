@@ -26,8 +26,9 @@
 				},
 				set: function(val) {
 					_data = val || [];
-					_view = _data;
-					this.pages = toPages(_data, _opts.pageLength);
+					_isFiltered = false;
+					_isGrouped = false;
+					refreshView();
 				}
 			});
 
@@ -181,7 +182,7 @@
 					_view = Object.keys(obj).map(function(key) {
 						return {
 							'key': key,
-							'row': obj[key]
+							'rows': obj[key]
 						};
 					});
 				}
@@ -207,17 +208,6 @@
 					r.push(i);
 				}
 				return r;
-			}
-
-			function dataobjToArray(data) {
-				var arr = [];
-				angular.forEach(data, function(val, key) {
-					this.push({
-						'key': key,
-						'value': val
-					});
-				}, arr);
-				return arr;
 			}
 		}
 		return P;
