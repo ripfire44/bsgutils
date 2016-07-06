@@ -101,65 +101,69 @@ This service class allows the user to create a pager object. This utility will a
 
 ```html
 <script>
-	$scope.datafilter = {};
-	$scope.$watch('datafilter.last_name', function(newVal, oldVal){
-		if(newVal===oldVal) {
-			return;
-		}
-		$scope.dataset.setFilter($scope.datafilter);
-	});
-	$http.get('content/data.json').then(function(xhr){
-		$scope.dataset = new bsgPager(xhr.data);
+	angular.module('MyApp',['bsg']).controller('Main', function($scope, $http, bsgPager){
+		$scope.datafilter = {};
+		$scope.$watch('datafilter.last_name', function(newVal, oldVal){
+			if(newVal===oldVal) {
+				return;
+			}
+			$scope.dataset.setFilter($scope.datafilter);
+		});
+		$http.get('content/data.json').then(function(xhr){
+			$scope.dataset = new bsgPager(xhr.data);
+		});
 	});
 </script>
-<div>
-	<div class="form-inline pull-left">
-		<div class="form-group">
-			<label class="sr-only" for="tableFilter">Filter Last Name</label>
-			<input type="text" class="form-control" id="tableFilter" placeholder="Filter Last Name" ng-model="datafilter.last_name" />
+<div ng-controller="Main">
+	<div>
+		<div class="form-inline pull-left">
+			<div class="form-group">
+				<label class="sr-only" for="tableFilter">Filter Last Name</label>
+				<input type="text" class="form-control" id="tableFilter" placeholder="Filter Last Name" ng-model="datafilter.last_name" />
+			</div>
 		</div>
+		<div class="pull-right"><strong>{{dataset.getInfo()}}</strong></div>
 	</div>
-	<div class="pull-right"><strong>{{dataset.getInfo()}}</strong></div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Email</th>
+				<th>Gender</th>
+				<th>IP Address</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="row in dataset.currentPage">
+				<td>{{row.first_name}}</td>
+				<td>{{row.last_name}}</td>
+				<td>{{row.email}}</td>
+				<td>{{row.gender}}</td>
+				<td>{{row.ip_address}}</td>
+			</tr>
+		</tbody>
+	</table>
+	<ul class="pagination">
+		<li ng-class="{disabled:dataset.currentPageIndex==0}">
+			<a aria-label="Previous" ng-click="dataset.unshiftPage()">
+				<span aria-hidden="true">&laquo;</span>
+			</a>
+		</li>
+		<li ng-hide="dataset.offset==0">
+			<a ng-click="dataset.unshiftOffset()">&#8230;</a>
+		</li>
+		<li ng-repeat="pageIndex in dataset.currentRange" ng-class="{active:dataset.currentPageIndex==pageIndex}">
+			<a ng-click="dataset.currentPageIndex = pageIndex">{{pageIndex+1}}</a>
+		</li>
+		<li ng-hide="dataset.isAtMaxOffset">
+			<a ng-click="dataset.shiftOffset()">&#8230;</a>
+		</li>
+		<li ng-class="{disabled:dataset.currentPage==dataset.lastPageIndex}">
+			<a aria-label="Next" ng-click="dataset.shiftPage()">
+				<span aria-hidden="true">&raquo;</span>
+			</a>
+		</li>
+	</ul>
 </div>
-<table class="table">
-	<thead>
-		<tr>
-			<th>First Name</th>
-			<th>Last Name</th>
-			<th>Email</th>
-			<th>Gender</th>
-			<th>IP Address</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr ng-repeat="row in dataset.currentPage">
-			<td>{{row.first_name}}</td>
-			<td>{{row.last_name}}</td>
-			<td>{{row.email}}</td>
-			<td>{{row.gender}}</td>
-			<td>{{row.ip_address}}</td>
-		</tr>
-	</tbody>
-</table>
-<ul class="pagination">
-	<li ng-class="{disabled:dataset.currentPageIndex==0}">
-		<a aria-label="Previous" ng-click="dataset.shiftPage(-1)">
-			<span aria-hidden="true">&laquo;</span>
-		</a>
-	</li>
-	<li ng-hide="dataset.offset==0">
-		<a ng-click="dataset.shiftOffset(-1)">&#8230;</a>
-	</li>
-	<li ng-repeat="pageIndex in dataset.currentRange" ng-class="{active:dataset.currentPageIndex==pageIndex}">
-		<a ng-click="dataset.currentPageIndex = pageIndex">{{pageIndex+1}}</a>
-	</li>
-	<li ng-hide="dataset.isAtMaxOffset()">
-		<a ng-click="dataset.shiftOffset()">&#8230;</a>
-	</li>
-	<li ng-class="{disabled:dataset.currentPage==dataset.lastPageIndex}">
-		<a aria-label="Next" ng-click="dataset.shiftPage()">
-			<span aria-hidden="true">&raquo;</span>
-		</a>
-	</li>
-</ul>
 ```
