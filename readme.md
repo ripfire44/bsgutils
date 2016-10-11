@@ -1,6 +1,6 @@
 # Angular bsg utils
 
-**v.1.5.1**
+**v.1.6.0**
 
 Angular Assessor Utility service, directives and filters
 
