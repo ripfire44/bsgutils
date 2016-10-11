@@ -4,36 +4,36 @@
   "private": true,
   "description": "Angular bsg utils",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "gulp test"
   },
   "dependencies": {
     "express": "^4.13.3"
   },
   "devDependencies": {
-    "angular-mocks": "^1.5.5",
-    "browser-sync": "^2.11.1",
+    "angular-mocks": "^1.5.8",
+    "browser-sync": "^2.17.2",
     "gulp": "^3.9.0",
     "gulp-add-src": "^0.2.0",
-    "gulp-angular-templatecache": "^1.8.0",
-    "gulp-autoprefixer": "^3.1.0",
+    "gulp-angular-templatecache": "^1.9.1",
+    "gulp-autoprefixer": "^3.1.1",
     "gulp-concat": "^2.6.0",
-    "gulp-ejs": "^2.0.0",
-    "gulp-less": "^3.0.5",
+    "gulp-ejs": "^2.2.1",
+    "gulp-less": "^3.1.0",
     "gulp-minify-css": "^1.2.3",
-    "gulp-nodemon": "^2.0.6",
+    "gulp-nodemon": "^2.2.1",
     "gulp-rename": "^1.2.2",
     "gulp-rimraf": "^0.2.0",
-    "gulp-uglify": "^1.5.1",
-    "jasmine": "^2.4.1",
-    "jasmine-core": "^2.4.1",
+    "gulp-uglify": "^1.5.4",
+    "jasmine": "^2.5.2",
+    "jasmine-core": "^2.5.2",
     "jasmine-jquery": "^2.1.1",
-    "jquery": "^3.0.0",
+    "jquery": "^3.1.1",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^1.0.1",
     "karma-jasmine": "^1.0.2",
-    "karma-phantomjs-launcher": "^1.0.0",
+    "karma-phantomjs-launcher": "^1.0.2",
     "karma-spec-reporter": "0.0.26",
-    "phantomjs-prebuilt": "^2.1.7",
-    "run-sequence": "^1.1.5"
+    "phantomjs-prebuilt": "^2.1.13",
+    "run-sequence": "^1.2.2"
   }
 }
