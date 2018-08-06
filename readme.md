@@ -110,7 +110,8 @@ This service class allows the user to create a pager object. This utility will a
 			$scope.dataset.setFilter($scope.datafilter);
 		});
 		$http.get('content/data.json').then(function(xhr){
-			$scope.dataset = new bsgPager(xhr.data);
+			// pass data and option as parameters
+			$scope.dataset = new bsgPager(xhr.data, {pageLength: 8, rangeLength: 5 });
 		});
 	});
 </script>
