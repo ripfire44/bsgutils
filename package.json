@@ -7,6 +7,8 @@
     "test": "gulp test"
   },
   "dependencies": {
+    "@types/angular": "^1.6.54",
+    "angular": "^1.7.8",
     "express": "^4.13.3"
   },
   "devDependencies": {
@@ -34,6 +36,11 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-spec-reporter": "0.0.26",
     "phantomjs-prebuilt": "^2.1.13",
-    "run-sequence": "^1.2.2"
+    "run-sequence": "^1.2.2",
+    "ts-loader": "^6.0.0",
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.5",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.2"
   }
 }
