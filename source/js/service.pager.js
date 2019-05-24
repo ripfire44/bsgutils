@@ -119,11 +119,15 @@
 				return msg + (_isFiltered ? filter : '');
 			};
 
-			this.shiftOffset = function() {
-				_currentPageOffset += _opts.rangeLength;
+			this.setOffset = function(n) {
+				n = typeof n == 'number' && n;
 				_currentPageOffset = clamp(_currentPageOffset, 0, this.currentMaxOffset);
 				this.currentPageIndex = clamp(this.currentPageIndex, _currentPageOffset, Math.min(_currentPageOffset + _opts.rangeLength, this.pages.length) - 1);
 				return this.currentPageOffset;
+			};
+
+			this.shiftOffset = function() {
+				return this.setOffset(_currentPageOffset+_opts.rangeLength);
 			};
 
 			this.unshiftOffset = function() {
