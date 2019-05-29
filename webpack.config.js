@@ -20,6 +20,9 @@ module.exports = (function(){
         output: {
             filename: 'angular-bsg-utils.js',
             path: path.resolve(__dirname, 'dist'),
+        },
+        externals: {
+            angular: 'angular'
         }
     };
 }());

@@ -1,7 +1,11 @@
-/// <reference types="angular" />
+import { module } from 'angular';
+import YesNoFilter from './yesNo.filter';
 
-//import {module} from 'angular';
 
-angular.module('bsg',[]);
 
-//module('bsg',[]);
+// Create module
+module('bsg',[]);
+
+// add module components
+
+module('bsg').filter('bsgYesNo', YesNoFilter)
