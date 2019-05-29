@@ -1,4 +1,7 @@
-import {module} from 'angular';
+/// <reference types="angular" />
 
+//import {module} from 'angular';
 
-module('bsg',[]);
+angular.module('bsg',[]);
+
+//module('bsg',[]);
