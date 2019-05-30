@@ -1,8 +1,11 @@
 import { module } from 'angular';
 import YesNoFilter from './yesNo.filter';
+import UtilsService from './utils.service';
 
 // Create module
-module('bsg',[]);
+var app = module('bsg',[]);
 
 // add module components
-module('bsg').filter('bsgYesNo', YesNoFilter);
+app.filter('bsgYesNo', YesNoFilter);
+app.factory('bsgUtils', UtilsService);
+
