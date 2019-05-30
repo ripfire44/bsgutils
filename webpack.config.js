@@ -19,7 +19,7 @@ module.exports = (function(){
         resolve,
         output: {
             filename: 'angular-bsg-utils.js',
-            path: path.resolve(__dirname, 'dist'),
+            path: path.resolve(__dirname, 'wwwroot/js'),
         },
         externals: {
             angular: 'angular'

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>BSG Utils Test Page</title>
+    <meta name="description" content="BSG Utils Test Page">
+    <meta name="author" content="SitePoint">
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-bsg-utils.js"></script>
+</head>
+
+<body ng-app="myapp" ng-controller="MainController as main">
+    <h3>BSG Utils Test Page</h3>
+    <p>{{main.hello}}</p>
+    <p>Value: {{main.x|bsgYesNo}}</p>
+    <script>
+        (function () {
+            var app = angular.module('myapp', ['bsg']);
+            app.controller('MainController', [function () {
+                var main = this;
+                main.hello = 'world';
+                main.x = true;
+            }]);
+        })();
+    </script>
+</body>
+
+</html>
