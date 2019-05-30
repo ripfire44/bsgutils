@@ -62,4 +62,11 @@ export default class UtilsService {
         });
         return this.$q.all(sourcesLoaded);
     }
+    getType(obj:any){
+        try {
+            return Object.prototype.toString.call(obj);
+        } finally {
+            return Object.prototype.toString.call(undefined);
+        }
+    }
 }

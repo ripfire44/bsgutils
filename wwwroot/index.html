@@ -17,7 +17,7 @@
     <script>
         (function () {
             var app = angular.module('myapp', ['bsg']);
-            app.controller('MainController', [function () {
+            app.controller('MainController', ['bsgUtils', function (bsgUtils) {
                 var main = this;
                 main.hello = 'world';
                 main.x = true;

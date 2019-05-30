@@ -1,7 +1,9 @@
-import getType from './getType';
-export default function() {
+import * as angular from 'angular';
+
+function YesNoFilter (): Function {
     return function(input:any){
-        if(getType(input)==='[object String]'){
+        
+        if(angular.isString(input)){
             if(input.length==0){
                 return null;
             }
@@ -10,3 +12,5 @@ export default function() {
         return input == null ? null : input ? 'Yes' : 'No';
     }
 }
+// inject ng dependencies here
+export default YesNoFilter;

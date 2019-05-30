@@ -1,3 +1,7 @@
 export default function(o:any){
-    return Object.prototype.toString.call(o);
+    try {
+        return Object.prototype.toString.call(o);
+    } finally {
+        return Object.prototype.toString.call(undefined);
+    }
 }
