@@ -12,7 +12,7 @@ interface PagerOptions {
     rangeLength: number,
 }
 let _$filter: IFilterServiceLocal;
-class Pager {
+export default class PagerFactory {
     private _data: object[] = [];
     private _view: object[] = [];
     private _pages: object[][] = [];
@@ -175,10 +175,13 @@ class Pager {
         } while (d.length);
         return p;
     }
+
+    static factory(): Function{
+        const pagerFactory = ($filter:IFilterServiceLocal) => {
+            _$filter = $filter;
+            return PagerFactory;
+        };
+        pagerFactory.$inject = ['$filter'];
+        return pagerFactory;
+    }
 }
-function PagerFactory($filter: IFilterServiceLocal): Function {
-    _$filter = $filter;
-    return Pager;
-}
-PagerFactory.$inject = ['$filter'];
-export default PagerFactory;

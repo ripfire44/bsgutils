@@ -33,24 +33,24 @@ export default class UtilsService {
         }
         return buffer.join('&').replace(/%20/g, '+');
     }
-    addScript(source: string) {
-        var sources: string[] = [];
-        var sourcesLoaded: IPromise<any>[] = [];
+    addScript(source: string | string[]) {
+        let sources: string[] = [];
+        let sourcesLoaded: IPromise<any>[] = [];
         if (angular.isString(source)) {
-            sources.push(source);
+            sources = [source];
         } else if (angular.isArray(source) && angular.isString(source[0])) {
-            sources.push.apply(sources, source);
+            sources = sources.concat(source);
         } else {
             return this.$q.reject();
         }
         angular.forEach(sources, function (src) {
             if (angular.isString(src)) {
-                var scriptTag = angular.element(this.$window.document.createElement('script'));
+                let scriptTag = angular.element(this.$window.document.createElement('script'));
                 scriptTag.attr('charset', 'utf-8');
                 scriptTag.attr('src', src);
-                var element = angular.element(this.$window.document.head);
+                let element = angular.element(this.$window.document.head);
                 element.append(scriptTag);
-                var load = this.$q.defer();
+                let load = this.$q.defer();
                 scriptTag[0].onload = function () {
                     load.resolve();
                 };
@@ -59,7 +59,7 @@ export default class UtilsService {
                 };
                 sourcesLoaded.push(load.promise);
             }
-        });
+        }, this);
         return this.$q.all(sourcesLoaded);
     }
     getType(obj:any){
