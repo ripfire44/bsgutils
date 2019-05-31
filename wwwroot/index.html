@@ -14,13 +14,54 @@
     <h3>BSG Utils Test Page</h3>
     <p>{{main.hello}}</p>
     <p>Value: {{main.x|bsgYesNo}}</p>
+    <div style="width:100px;height:100px;background-color:#f77;" ng-click="main.clicked()">
+        <a href="#" bsg-nopropagate>Click me</a>
+    </div>
+    <div>{{main.pagedData.getInfo()}}</div>
+
+
+    <table>
+        <tr ng-repeat="row in main.pagedData.currentPage">
+            <td>{{row.first_name}}</td>
+            <td>{{row.last_name}}</td>
+            <td>{{row.email}}</td>
+        </tr>
+    </table>
+    <code>
+        {{main.paramout}}
+    </code>
     <script>
         (function () {
             var app = angular.module('myapp', ['bsg']);
-            app.controller('MainController', ['bsgUtils', function (bsgUtils) {
+            app.controller('MainController', ['bsgUtils', 'bsgPager', '$http', function (bsgUtils, bsgPager, $http) {
                 var main = this;
                 main.hello = 'world';
                 main.x = true;
+                main.myparams = {
+                    name: 'john',
+                    age: '42',
+                    other: {
+                        x: 25,
+                        j: new Date()
+                    }
+                };
+                main.paramout = bsgUtils.param(main.myparams);
+                $http.get('mockdata.json').then(function (xhr) {
+                    main.data = xhr.data;
+                    main.pagedData = new bsgPager(main.data, { pageLength: 8, rangeLength: 5 });
+
+                });
+                bsgUtils.addScript('js/sample.js').then(function () {
+                    window.alert('script loaded');
+                });
+                main.clicked = function () {
+                    debugger;
+                    alert('hello');
+                    var x = 0;
+                };
+                bsgUtils.triggerResize().then(function () {
+                    window.alert('Window resized');
+                });
             }]);
         })();
     </script>
