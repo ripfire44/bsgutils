@@ -23,6 +23,7 @@ module.exports = (function(){
         },
         externals: {
             angular: 'angular'
-        }
+        },
+        devtool: 'inline-source-map'
     };
 }());
